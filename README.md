@@ -1,2 +1,5 @@
 # java-projects
-These are all my java projects, including a calendar project and a yahtzee game under the title "dice"
+These are all my java projects including: 
+ a calendar project  
+ a yahtzee game under the title "dice"
+ a GUI that calculates the day of the week of any given date
