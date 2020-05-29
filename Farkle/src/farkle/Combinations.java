@@ -5,212 +5,191 @@
  */
 package farkle;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Random;
+import java.util.Scanner;
 /**
  *
  * @author Rachel
  */
-public class Combinations 
+public class Dice 
 {
-    private int[] combinations= new int[14]; //has all the combination types in order listed in riles, all items will be set to zero unless the combination is fulfiled with the dice
-    private ArrayList<Integer> dice= new ArrayList<Integer>();
+    private ArrayList<Integer> userDice= new ArrayList<Integer>();
     
-    public Combinations(ArrayList<Integer> dice)
+    private ArrayList<Integer> computerDice= new ArrayList<Integer>();
+    
+    private int uTurnPoints=0; //keeps track of how many points the user has on a turn, resets to 0 every turn
+    private int cTurnPoints=0; //keeps track of how many points the computer has in a turn, resets to 0 every turn
+    private int uTotalPoints=0; //keeps track of how many points the user has during the game
+    private int cTotalPoints=0; //keeps track of how many points the computer has in the game
+    
+    private Scanner scan=new Scanner(System.in);
+    
+    private Random rand= new Random();
+    
+    public Dice()
     {
-        this.dice=dice;
-        Collections.sort(dice);
-        for(int i=0; i<14; i++)
-        {
-            combinations[i]=0;
-        }
-        displayCombinations();
+        displayRules();
     }
-    public void displayCombinations()
+    public void displayRules()
     {
-        System.out.println ("Ones:"+countOnes()*100+" \n"
-                + "Fives:" +countFives()*50+"\n"
-                + "Three Ones: "+threeOnes()+"\n"
-                + "Three Twos: "+threeTwos()+"\n"
-                + "Three Threes: "+threeThrees()+"\n"
-                + "Three Fours: "+threeFours()+"\n"
-                + "Three Fives: "+threeFives()+"\n"
-                + "Three Sixes: "+threeSixes()+"\n"
-                + "1-2-3-4-5-6: "+oneToSix()+"\n"
-                + "Three Pairs: "+threePairs()+"\n"
-                + "4 of a Kind: "+fourOfAKind()+"\n"
-                + "5 of a Kind: "+fiveOfAKind()+"\n"
-                + "6 of a Kind: "+sixOfAKind()+"\n"
-                + "Two Triplets: "+twoTriplets()+"\n"
+        System.out.println("Welcome! These are the rules of the game:\n"
+                + "To play, you must roll the dice on your turn. You begin by rolling all 6 dice.\n"
+                + "When you roll the dice, you have to look for combinations, which will be listed below. Combinations are worth points. \n"
+                + "If you still have dice remaining after searching for combinations, you can reroll those dice to try to get more points.\n"
+                + "The dice that you saved from a combination can no longer be resused. \n"
+                + "However, if you do not get any combinations with the dice you roll, you Farkle and loose all points that you got during that turn.\n"
+                + "All ones and fives are worth points on their own and you can keep them; they can save you from getting a Farkle. \n"
+                + "When you've used all your dice, your turn is over. \n"
         );
-    }
-    public int[] getCombinations()
-    {
-        return combinations;
-    }
-    public int countOnes()
-    {
-        int count=0;
-        for (int i=0; i<dice.size(); i++)
-        {
-            if (i==1)count++;
-        }
-        combinations[0]=count*100;
-        return count;       
-    }
-    public int countFives()
-    {
-        int count=0;
-        for (int i=0; i<dice.size(); i++)
-        {
-            if (i==5)count++;
-        }
-        combinations[1]=count*50;
-        return count;       
-    }
-    public int threeOnes()
-    {
-        if (countOnes()==300)
-        {
-            combinations[2]=300;
-            return 300;
-        }
-        return 0;
-    }
-    public int threeTwos()
-    {
-        int count=0;
-        for (int i=0; i<dice.size(); i++)
-        {
-            if (i==2)count++;
-        }
-        if(count==3){combinations[3]=200; return 200;}
-        return 0;
-    }
-    public int threeThrees()
-    {
-        int count=0;
-        for (int i=0; i<dice.size(); i++)
-        {
-            if (i==3)count++;
-        }
-        if(count==3){combinations[4]=300; return 300;}
-        return 0;
-    }
-    public int threeFours()
-    {
-        int count=0;
-        for (int i=0; i<dice.size(); i++)
-        {
-            if (i==4)count++;
-        }
-        if(count==3){combinations[5]=400; return 400;}
-        return 0;
-    }
-    public int threeFives()
-    {
-        if (countOnes()==150)
-        {
-            combinations[6]=500;
-            return 500;
-        }
-        return 0;
-    }
-    public int threeSixes()
-    {
-        int count=0;
-        for (int i=0; i<dice.size(); i++)
-        {
-            if (i==6)count++;
-        }
-        if(count==3){combinations[7]=600; return 600;}
-        return 0;
-    }
-    public int oneToSix()
-    {
-        boolean boo=true;
         
-        for(int i=0; i<5; i++)
+        System.out.println("These are the combinations and points: \n");
+        
+        System.out.println ("Ones: 100 points\n"
+                + "Fives: 50 points\n"
+                + "Three Ones: 300 points\n"
+                + "Three Twos: 200 points\n"
+                + "Three Threes: 300 points\n"
+                + "Three Fours: 400 points\n"
+                + "Three Fives: 500 points\n"
+                + "Three Sixes: 600 points\n"
+                + "1-2-3-4-5-6: 1500 points\n"
+                + "Three Pairs: 600 points\n"
+                + "4 of a Kind: 2000 points\n"
+                + "5 of a Kind: 4000 points\n"
+                + "6 of a Kind: 6000 points\n"
+                + "Two Triplets: 2500 points\n"
+        );
+        
+        System.out.println("First Player to 10000 points wins. Enjoy!");
+        
+    }
+    public void rollUserDice()
+    {
+        for (int i=0; i<6; i++)
         {
-            if((dice.get(i)+1)!=dice.get(i+1))
+            userDice.add(rand.nextInt(6)+1);
+            System.out.println("Dice "+(i+1)+": " +userDice.get(i));
+        }
+    }
+    public void rerollUserDice()
+    {
+        System.out.println("These are currently your dice, in numerical order: ");
+        for(int i=0; i<userDice.size(); i++)
+        {
+            System.out.println("Dice #"+(i+1)+": "+userDice.get(i));
+        }
+        System.out.println("What dice would you like to reroll? Enter the dice number. When you are done, enter 0.");
+        int temp=userDice.size();
+        int counter=0;
+        while(temp>0)
+        {
+            System.out.println("Enter your number: ");
+            temp=scan.nextInt();
+            if(temp!=0) counter++;
+        }
+        userDice.clear();
+        for (int i=0; i<counter; i++)
+        {
+            userDice.add(rand.nextInt(6)+1);
+        }
+    }
+    
+    public void userTurn()
+    {
+        //will roll the dice and check for combinations, keeping them as the user wants
+        System.out.println("These are your dice: ");
+        rollUserDice();
+        Combinations c=new Combinations(userDice);
+        int[] combinations=c.getCombinations();
+        boolean isCombinations=false;
+        for(int i=0;i<combinations.length; i++)
+        {
+            if(combinations[i]>0)
             {
-                boo=false;
-                return 0;
+                isCombinations=true;
+                break;
             }
         }
-        
-        combinations[8]=1500;
-        return 1500;
-    }
-    public int threePairs()
-    {
-        if(dice.get(0)==dice.get(1))
+        if(isCombinations==false)System.out.println("You Farkled! You will not be getting any points for this turn.");
+        else
         {
-            if (dice.get(2)==dice.get(3))
+            System.out.println("What combination(s) would you like to keep? Enter the number of the combination below, or enter 0 if you are done:");
+            System.out.println("Remeber: if you use a dice in one combination you cannot use it in another");
+            int temp=combinations.length+1;
+            while(temp>0)
             {
-                if (dice.get(4)==dice.get(5))
+                System.out.println("Enter your number here: ");
+                temp=scan.nextInt();
+                try
                 {
-                    combinations[9]=600;
-                    return 600;
+                    uTurnPoints+=combinations[temp-1];
+                }
+                catch(Exception e)
+                {
+                    if(temp-1<0)break;
+                    System.out.println("That was not a valid number!");
+                }
+            }
+            System.out.println("Your points right now are: "+uTurnPoints);
+            System.out.println("Would you like to reroll any dice? \"Y\" for yes and \"N\" for no");
+            String answer=scan.nextLine();
+            if(answer.equals("N"))
+            {
+                uTotalPoints+=uTurnPoints;
+                uTurnPoints=0;
+                userDice.clear();
+                System.out.println("Your Total Points: "+uTotalPoints);
+                System.out.println("Computer Total Points: "+cTotalPoints);
+            }
+            else
+            {
+                while(answer.equals("Y"))
+                {
+                    rerollUserDice();
+                    
+                    c=new Combinations(userDice);
+                    combinations=c.getCombinations();
+                    isCombinations=false;
+                    for(int i=0;i<combinations.length; i++)
+                    {
+                        if(combinations[i]>0)
+                        {
+                            isCombinations=true;
+                            break;
+                        }
+                    }
+                    if(isCombinations==false)System.out.println("You Farkled! You will not be getting any points for this turn.");
+                    else
+                    {
+                        System.out.println("What combination(s) would you like to keep? Enter the number of the combination below, or enter 0 if you are done:");
+                        System.out.println("Remeber: if you use a dice in one combination you cannot use it in another");
+                        temp=combinations.length+1;
+                        while(temp>0)
+                        {
+                            System.out.println("Enter your number here: ");
+                            temp=scan.nextInt();
+                            try
+                            {
+                                uTurnPoints+=combinations[temp-1];
+                            }
+                            catch(Exception e)
+                            {
+                                if(temp-1<0)break;
+                                System.out.println("That was not a valid number!");
+                            }
+                        }
+                    }
+                    System.out.println("Would you like to reroll any other dice? \"Y\" for yes and \"N\" for no");
+                    answer=scan.nextLine();
                 }
             }
         }
-        return 0;
     }
-    public int fourOfAKind()
+    
+    public void computerTurn()
     {
-        if (dice.get(0)==dice.get(1)&&dice.get(0)==dice.get(2)&&dice.get(0)==dice.get(3))
-        {
-            combinations[10]=2000;
-            return 2000;
-        }
-        if(dice.get(1)==dice.get(2)&&dice.get(1)==dice.get(3)&&dice.get(1)==dice.get(4))
-        {
-            combinations[10]=2000;
-            return 2000;
-        }
-        if(dice.get(2)==dice.get(3)&&dice.get(2)==dice.get(4)&&dice.get(2)==dice.get(5))
-        {
-            combinations[10]=2000;
-            return 2000;
-        }
-        return 0;
+        //will roll the dice and check for combinations, keeping the combination with the most points and only rerolling if there are 3 or more dice left
     }
-    public int fiveOfAKind()
-    {
-        if (dice.get(0)==dice.get(1)&&dice.get(0)==dice.get(2)&&dice.get(0)==dice.get(3)&&dice.get(0)==dice.get(4))
-        {
-            combinations[11]=4000;
-            return 4000;
-        }
-        if(dice.get(1)==dice.get(2)&&dice.get(1)==dice.get(3)&&dice.get(1)==dice.get(4)&&dice.get(1)==dice.get(5))
-        {
-            combinations[11]=4000;
-            return 4000;
-        }
-        return 0;
-    }
-    public int sixOfAKind()
-    {
-        for(int i=0; i<6; i++)
-        {
-            if(dice.get(0)!=dice.get(i))
-            {
-                return 0;
-            }
-        }
-        combinations[12]=6000;
-        return 6000;
-    }
-    public int twoTriplets()
-    {
-        if (dice.get(0)==dice.get(1)&&dice.get(0)==dice.get(2))
-        {
-            if(dice.get(3)==dice.get(4)&&dice.get(3)==dice.get(5))
-            {
-                combinations[13]=2500;
-                return 2500;
-            }
-        }
-        return 0;
-    }
+    
+    
 }
