@@ -15,9 +15,12 @@ public class Combinations
     private int[] combinations= new int[14]; //has all the combination types in order listed in riles, all items will be set to zero unless the combination is fulfiled with the dice
     private ArrayList<Integer> dice= new ArrayList<Integer>();
     
-    public Combinations(ArrayList<Integer> dice)
+    public Combinations(ArrayList<Integer> d)
     {
-        this.dice=dice;
+        for(int i=0; i<d.size(); i++)
+        {
+            dice.add(d.get(i));
+        }
         Collections.sort(dice);
         for(int i=0; i<14; i++)
         {
@@ -53,7 +56,7 @@ public class Combinations
         int count=0;
         for (int i=0; i<dice.size(); i++)
         {
-            if (i==1)count++;
+            if (dice.get(i)==1)count++;
         }
         combinations[0]=count*100;
         return count;       
@@ -63,7 +66,7 @@ public class Combinations
         int count=0;
         for (int i=0; i<dice.size(); i++)
         {
-            if (i==5)count++;
+            if (dice.get(i)==5)count++;
         }
         combinations[1]=count*50;
         return count;       
@@ -82,7 +85,7 @@ public class Combinations
         int count=0;
         for (int i=0; i<dice.size(); i++)
         {
-            if (i==2)count++;
+            if (dice.get(i)==2)count++;
         }
         if(count==3){combinations[3]=200; return 200;}
         return 0;
@@ -92,7 +95,7 @@ public class Combinations
         int count=0;
         for (int i=0; i<dice.size(); i++)
         {
-            if (i==3)count++;
+            if (dice.get(i)==3)count++;
         }
         if(count==3){combinations[4]=300; return 300;}
         return 0;
@@ -102,7 +105,7 @@ public class Combinations
         int count=0;
         for (int i=0; i<dice.size(); i++)
         {
-            if (i==4)count++;
+            if (dice.get(i)==4)count++;
         }
         if(count==3){combinations[5]=400; return 400;}
         return 0;
@@ -121,7 +124,7 @@ public class Combinations
         int count=0;
         for (int i=0; i<dice.size(); i++)
         {
-            if (i==6)count++;
+            if (dice.get(i)==6)count++;
         }
         if(count==3){combinations[7]=600; return 600;}
         return 0;
@@ -215,3 +218,4 @@ public class Combinations
         return 0;
     }
 }
+
