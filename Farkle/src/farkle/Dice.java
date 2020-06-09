@@ -63,43 +63,47 @@ public class Dice
         System.out.println("First Player to 10000 points wins. Enjoy!");
         
     }
-    public void rollUserDice()
+    public ArrayList<Integer> rollUserDice()
     {
         for (int i=0; i<6; i++)
         {
             userDice.add(rand.nextInt(6)+1);
             System.out.println("Dice "+(i+1)+": " +userDice.get(i));
         }
+        return userDice;
     }
     public void rerollUserDice()
     {
-        System.out.println("These are currently your dice, in numerical order: ");
+        System.out.println("These are currently your dice: ");
         for(int i=0; i<userDice.size(); i++)
         {
             System.out.println("Dice #"+(i+1)+": "+userDice.get(i));
         }
         System.out.println("What dice would you like to reroll? Enter the dice number. When you are done, enter 0.");
         int temp=userDice.size();
-        int counter=0;
         while(temp>0)
         {
             System.out.println("Enter your number: ");
             temp=scan.nextInt();
-            if(temp!=0) counter++;
+            if(temp!=0)
+            {
+                System.out.println(userDice.get(temp-1));
+                userDice.remove((temp-1));
+                userDice.add((rand.nextInt(6)+1));
+            }
         }
-        userDice.clear();
-        for (int i=0; i<counter; i++)
+         for (int i=0; i<6; i++)
         {
-            userDice.add(rand.nextInt(6)+1);
+            System.out.println("Dice "+(i+1)+": " +userDice.get(i));
         }
+        uTurnPoints=0;
     }
     
     public void userTurn()
     {
         //will roll the dice and check for combinations, keeping them as the user wants
         System.out.println("These are your dice: ");
-        rollUserDice();
-        Combinations c=new Combinations(userDice);
+        Combinations c=new Combinations(rollUserDice());
         int[] combinations=c.getCombinations();
         boolean isCombinations=false;
         for(int i=0;i<combinations.length; i++)
@@ -132,6 +136,7 @@ public class Dice
             }
             System.out.println("Your points right now are: "+uTurnPoints);
             System.out.println("Would you like to reroll any dice? \"Y\" for yes and \"N\" for no");
+            scan.nextLine();
             String answer=scan.nextLine();
             if(answer.equals("N"))
             {
@@ -179,6 +184,7 @@ public class Dice
                             }
                         }
                     }
+                    scan.nextLine();
                     System.out.println("Would you like to reroll any other dice? \"Y\" for yes and \"N\" for no");
                     answer=scan.nextLine();
                 }
