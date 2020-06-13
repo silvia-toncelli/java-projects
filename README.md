@@ -4,4 +4,4 @@ These are all my java projects including:
   a yahtzee game under the title "dice"   
   a GUI that calculates the day of the week of any given date   
   a farkle dice game (UNFINISHED!!)   
-  a GUI that converts units for different temperatures
+  a GUI that converts units for different temperatures (under name BasicGUI)
